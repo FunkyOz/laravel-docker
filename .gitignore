@@ -17,4 +17,4 @@ yarn-error.log
 /.idea
 /.vscode
 /docker/.DS_store
-/docker/nginx/.DS_store
+/docker/caddy/.DS_store

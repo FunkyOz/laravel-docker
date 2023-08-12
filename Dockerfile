@@ -3,7 +3,7 @@
 FROM php:8.2-fpm-alpine AS php_upstream
 FROM mlocati/php-extension-installer:2 AS php_extension_installer_upstream
 FROM composer/composer:2-bin AS composer_upstream
-FROM nginx:stable-alpine3.17 AS nginx_upstream
+FROM caddy:2-alpine AS caddy_upstream
 
 
 # The different stages of this Dockerfile are meant to be built into separate images
@@ -95,27 +95,20 @@ RUN set -eux; \
 	composer dump-autoload --classmap-authoritative --no-dev; \
 	chmod +x artisan; sync;
 
-# Base Nginx image
-FROM nginx_upstream as nginx_base
+# Base Caddy image
+FROM caddy_upstream AS caddy_base
+
+ARG TARGETARCH
 
 WORKDIR /srv/app
 
-COPY --link docker/nginx/templates/ /etc/nginx/templates/
+# Download Caddy compiled with the Mercure and Vulcain modules
+ADD --chmod=500 https://caddyserver.com/api/download?os=linux&arch=$TARGETARCH&p=github.com/dunglas/mercure/caddy&p=github.com/dunglas/vulcain/caddy /usr/bin/caddy
 
-CMD [ "nginx", "-g", "daemon off;" ]
+COPY --link docker/caddy/Caddyfile /etc/caddy/Caddyfile
 
-FROM nginx_base as nginx_dev
 
-RUN rm -Rf /etc/nginx/app.conf
-
-RUN curl -JLO "https://dl.filippo.io/mkcert/latest?for=linux/amd64"; \
-    chmod +x mkcert-v*-linux-amd64; \
-    cp mkcert-v*-linux-amd64 /usr/local/bin/mkcert; \
-    rm -Rf mkcert-v*-linux-amd64;
-
-RUN mkcert -key-file key.pem -cert-file cert.pem "${SERVER_NAME:-localhost}"
-
-# Prod Nginx image
-FROM nginx_base as nginx_prod
+# Prod Caddy image
+FROM caddy_base AS caddy_prod
 
 COPY --from=php_prod --link /srv/app/public public/
