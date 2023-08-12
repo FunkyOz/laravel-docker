@@ -6,12 +6,6 @@ services:
         restart: unless-stopped
         volumes:
             - php_socket:/var/run/php
-        healthcheck:
-            test: [ "CMD", "/usr/local/bin/docker-healthcheck" ]
-            interval: 10s
-            timeout: 3s
-            retries: 3
-            start_period: 150s
         environment:
             LARAVEL_VERSION: ${LARAVEL_VERSION:-10}
             STABILITY: ${STABILITY:-stable}
