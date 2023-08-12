@@ -102,6 +102,8 @@ WORKDIR /srv/app
 
 COPY --link docker/nginx/templates/ /etc/nginx/templates/
 
+CMD [ "nginx", "-g", "daemon off;" ]
+
 FROM nginx_base as nginx_dev
 
 RUN rm -Rf /etc/nginx/app.conf

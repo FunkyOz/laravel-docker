@@ -1,4 +1,4 @@
-version: "3.4"
+version: "3.8"
 
 services:
     php:
@@ -7,10 +7,11 @@ services:
         volumes:
             - php_socket:/var/run/php
         healthcheck:
+            test: [ "CMD", "/usr/local/bin/docker-healthcheck" ]
             interval: 10s
             timeout: 3s
             retries: 3
-            start_period: 30s
+            start_period: 150s
         environment:
             LARAVEL_VERSION: ${LARAVEL_VERSION:-10}
             STABILITY: ${STABILITY:-stable}
@@ -18,7 +19,9 @@ services:
     nginx:
         image: ${IMAGES_PREFIX:-}app-nginx
         depends_on:
-            - php
+            php:
+                condition: service_healthy
+                restart: true
         environment:
             SERVER_NAME: ${SERVER_NAME:-localhost}
         restart: unless-stopped

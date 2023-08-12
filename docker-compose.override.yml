@@ -1,4 +1,4 @@
-version: "3.4"
+version: "3.8"
 
 # Development environment override
 services:
@@ -17,7 +17,6 @@ services:
       - host.docker.internal:host-gateway
 
   nginx:
-    command: [ "nginx", "-g", "daemon off;" ]
     build:
       context: .
       target: nginx_dev
