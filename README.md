@@ -3,7 +3,7 @@
 A [Docker](https://www.docker.com/)-based installer and runtime for the [Laravel](https://laravel.com/) web framework,
 with full HTTP/2 and HTTPS support.
 
-Full inspired by [Symfony Docker](https://github.com/dunglas/symfony-docker/blob/main/README.md).
+Built on top of [Symfony Docker](https://github.com/dunglas/symfony-docker/blob/main/README.md).
 
 ## Getting Started
 
