@@ -26,7 +26,9 @@ if [ "$1" = 'php-fpm' ] || [ "$1" = 'php' ] || [ "$1" = 'artisan' ]; then
         composer run-script post-root-package-install
 		composer install --prefer-dist --no-progress --no-interaction
 		composer run-script post-create-project-cmd
-    elif [ "$APP_ENV" != 'prod' ]; then
+	fi
+
+	if [ "$APP_ENV" != 'prod' ]; then
 		composer install --prefer-dist --no-progress --no-interaction
 	fi
 fi

@@ -39,7 +39,7 @@ Use the `SERVER_NAME` environment variable to define your custom server name(s).
 
 ## Using custom HTTP ports
 
-Use the environment variables `HTTP_PORT` and/or `HTTPS_PORT` to adjust the ports to your needs, e.g.
+Use the environment variables `HTTP_PORT`, `HTTPS_PORT` and/or `HTTP3_PORT` to adjust the ports to your needs, e.g.
 
     HTTP_PORT=8000 HTTPS_PORT=4443 docker compose up --wait
 

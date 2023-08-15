@@ -1,4 +1,5 @@
 #syntax=docker/dockerfile:1.4
+
 # Versions
 FROM php:8.2-fpm-alpine AS php_upstream
 FROM mlocati/php-extension-installer:2 AS php_extension_installer_upstream
@@ -95,6 +96,7 @@ RUN set -eux; \
 	composer dump-autoload --classmap-authoritative --no-dev; \
 	chmod +x artisan; sync;
 
+
 # Base Caddy image
 FROM caddy_upstream AS caddy_base
 
@@ -106,7 +108,6 @@ WORKDIR /srv/app
 ADD --chmod=500 https://caddyserver.com/api/download?os=linux&arch=$TARGETARCH&p=github.com/dunglas/mercure/caddy&p=github.com/dunglas/vulcain/caddy /usr/bin/caddy
 
 COPY --link docker/caddy/Caddyfile /etc/caddy/Caddyfile
-
 
 # Prod Caddy image
 FROM caddy_base AS caddy_prod
