@@ -14,6 +14,7 @@ $ docker cp $(docker compose ps -q caddy):/data/caddy/pki/authorities/local/root
 $ docker compose cp caddy:/data/caddy/pki/authorities/local/root.crt %TEMP%/root.crt && certutil -addstore -f "ROOT" %TEMP%/root.crt
 ```
 
+
 ## Using Custom TLS Certificates
 
 By default, Caddy will automatically generate TLS certificates using Let's Encrypt or ZeroSSL.

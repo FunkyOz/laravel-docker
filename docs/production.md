@@ -60,11 +60,10 @@ Go into the directory containing your project (`<project-name>`), and start the 
 ```console
 SERVER_NAME=your-domain-name.example.com \
 APP_SECRET=ChangeMe \
-CADDY_MERCURE_JWT_SECRET=ChangeThisMercureHubJWTSecretKey \
 docker compose -f docker-compose.yml -f docker-compose.prod.yml up --wait
 ```
 
-Be sure to replace `your-domain-name.example.com` by your actual domain name and to set the values of `APP_SECRET`, `CADDY_MERCURE_JWT_SECRET` to cryptographically secure random values.
+Be sure to replace `your-domain-name.example.com` by your actual domain name and to set the values of `APP_SECRET` to cryptographically secure random values.
 
 Your server is up and running, and a Let's Encrypt HTTPS certificate has been automatically generated for you.
 Go to `https://your-domain-name.example.com` and enjoy!
@@ -76,7 +75,6 @@ Alternatively, if you don't want to expose an HTTPS server but only an HTTP one,
 ```console
 SERVER_NAME=:80 \
 APP_SECRET=ChangeMe \
-CADDY_MERCURE_JWT_SECRET=ChangeThisMercureHubJWTSecretKey \
 docker compose -f docker-compose.yml -f docker-compose.prod.yml up --wait
 ```
 
