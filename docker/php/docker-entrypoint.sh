@@ -1,12 +1,7 @@
 #!/bin/sh
 set -e
 
-# first arg is `-f` or `--some-option`
-if [ "${1#-}" != "$1" ]; then
-	set -- php-fpm "$@"
-fi
-
-if [ "$1" = 'php-fpm' ] || [ "$1" = 'php' ] || [ "$1" = 'artisan' ]; then
+if [ "$1" = 'supervisord' ] || [ "$1" = 'php' ] || [ "$1" = 'artisan' ]; then
 	# Install the project the first time PHP is started
 	# After the installation, the following block can be deleted
 	if [ ! -f composer.json ]; then
@@ -16,7 +11,6 @@ if [ "$1" = 'php-fpm' ] || [ "$1" = 'php' ] || [ "$1" = 'artisan' ]; then
 		cd tmp
 		cp -Rp . ..
 		cd -
-
 		rm -Rf tmp/
 
         composer run-script post-root-package-install
@@ -24,9 +18,14 @@ if [ "$1" = 'php-fpm' ] || [ "$1" = 'php' ] || [ "$1" = 'artisan' ]; then
 		composer run-script post-create-project-cmd
 	fi
 
-	if [ "$APP_ENV" != 'prod' ]; then
+	if [ -z "$(ls -A 'vendor/' 2>/dev/null)" ]; then
 		composer install --prefer-dist --no-progress --no-interaction
 	fi
+
+    if [ "$APP_ENV" = "prod" ]; then
+        setfacl -R -m u:www-data:rwX -m u:"$(whoami)":rwX storage
+	    setfacl -dR -m u:www-data:rwX -m u:"$(whoami)":rwX storage
+    fi
 fi
 
 exec docker-php-entrypoint "$@"

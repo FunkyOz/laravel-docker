@@ -4,12 +4,20 @@
 FROM php:8.2-fpm-alpine AS php_upstream
 FROM mlocati/php-extension-installer:2 AS php_extension_installer_upstream
 FROM composer/composer:2-bin AS composer_upstream
-FROM caddy:2-alpine AS caddy_upstream
+FROM caddy:2-builder-alpine AS caddy_builder_upstream
 
 
 # The different stages of this Dockerfile are meant to be built into separate images
 # https://docs.docker.com/develop/develop-images/multistage-build/#stop-at-a-specific-build-stage
 # https://docs.docker.com/compose/compose-file/#target
+
+
+# Base Caddy builder image
+FROM caddy_builder_upstream as caddy_builder
+
+RUN xcaddy build \
+    --with github.com/dunglas/mercure/caddy \
+    --with github.com/dunglas/vulcain/caddy
 
 
 # Base PHP image
@@ -25,7 +33,14 @@ RUN apk add --no-cache \
 		file \
 		gettext \
 		git \
+    	supervisor \
 	;
+
+RUN mkdir -p /var/log/php
+RUN mkdir -p /var/log/supervisord
+RUN mkdir -p /var/run/supervisord
+
+COPY --link docker/supervisord/supervisord.conf /etc/supervisord.conf
 
 # php extensions installer: https://github.com/mlocati/docker-php-extension-installer
 COPY --from=php_extension_installer_upstream --link /usr/bin/install-php-extensions /usr/local/bin/
@@ -46,13 +61,8 @@ RUN mkdir -p /var/run/php
 COPY --link docker/php/docker-healthcheck.sh /usr/local/bin/docker-healthcheck
 RUN chmod +x /usr/local/bin/docker-healthcheck
 
-HEALTHCHECK --interval=10s --timeout=3s --retries=3 --start-period=120s CMD ["docker-healthcheck"]
-
 COPY --link docker/php/docker-entrypoint.sh /usr/local/bin/docker-entrypoint
 RUN chmod +x /usr/local/bin/docker-entrypoint
-
-ENTRYPOINT ["docker-entrypoint"]
-CMD ["php-fpm"]
 
 # https://getcomposer.org/doc/03-cli.md#composer-allow-superuser
 ENV COMPOSER_ALLOW_SUPERUSER=1
@@ -60,9 +70,20 @@ ENV PATH="${PATH}:/root/.composer/vendor/bin"
 
 COPY --from=composer_upstream --link /composer /usr/bin/composer
 
+# Copy caddy from builder
+RUN mkdir -p /etc/caddy
+COPY --link docker/caddy/Caddyfile /etc/caddy/Caddyfile
+COPY --from=caddy_builder /usr/bin/caddy /usr/bin/caddy
+
+HEALTHCHECK --interval=10s --timeout=3s --retries=3 --start-period=150s CMD ["docker-healthcheck"]
+
+ENTRYPOINT ["docker-entrypoint"]
+
+CMD ["supervisord", "-n", "-c", "/etc/supervisord.conf"]
+
 
 # Dev PHP image
-FROM php_base AS php_dev
+FROM php_base AS server_dev
 
 ENV APP_ENV=dev XDEBUG_MODE=off
 
@@ -75,8 +96,9 @@ RUN set -eux; \
 
 COPY --link docker/php/conf.d/app.dev.ini $PHP_INI_DIR/conf.d/
 
+
 # Prod PHP image
-FROM php_base AS php_prod
+FROM php_base AS server_prod
 
 ENV APP_ENV=prod
 
@@ -96,20 +118,5 @@ RUN set -eux; \
 	composer dump-autoload --classmap-authoritative --no-dev; \
 	chmod +x artisan; sync;
 
-
-# Base Caddy image
-FROM caddy_upstream AS caddy_base
-
-ARG TARGETARCH
-
-WORKDIR /srv/app
-
-# Download Caddy compiled with the Mercure and Vulcain modules
-ADD --chmod=500 https://caddyserver.com/api/download?os=linux&arch=$TARGETARCH&p=github.com/dunglas/mercure/caddy&p=github.com/dunglas/vulcain/caddy /usr/bin/caddy
-
-COPY --link docker/caddy/Caddyfile /etc/caddy/Caddyfile
-
-# Prod Caddy image
-FROM caddy_base AS caddy_prod
-
-COPY --from=php_prod --link /srv/app/public public/
+RUN chown -R www-data:www-data ./storage/framework/views
+RUN chown -R www-data:www-data ./storage/logs
