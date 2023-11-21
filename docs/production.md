@@ -1,7 +1,7 @@
 # Deploying in Production
 
-Symfony Docker provides Docker images, and a Docker Compose definition optimized for production usage.
-In this tutorial, we will learn how to deploy our Symfony application on a single server using Docker Compose.
+Laravel Docker provides Docker images, and a Docker Compose definition optimized for production usage.
+In this tutorial, we will learn how to deploy our Laravel application on a single server using Docker Compose.
 
 ## Preparing a Server
 
@@ -13,12 +13,15 @@ Otherwise, use [this affiliate link](https://m.do.co/c/5d8aabe3ab80) to get $100
 Then, click on the "Marketplace" tab under the "Choose an image" section and search for the app named "Docker".
 This will provision an Ubuntu server with the latest versions of Docker and Docker Compose already installed!
 
-For test purposes, cheapest plans will be enough, even though you might want at least 2GB of RAM to execute Docker Compose for the first time. For real production usage, you'll probably want to pick a plan in the "general purpose" section that will fit your needs.
+For test purposes, the cheapest plans will be enough,
+even though you might want at least 2GB of RAM to execute Docker Compose for the first time.
+For real production usage, you'll probably want to pick a plan in the "general purpose"
+section that will fit your needs.
 
 ![Deploying a Symfony app on DigitalOcean with Docker Compose](digitalocean-droplet.png)
 
 You can keep the defaults for other settings, or tweak them according to your needs.
-Don't forget to add your SSH key or to create a password then press the "Finalize and create" button.
+Remember to add your SSH key or to create a password, then press the "Finalize and create" button.
 
 Then, wait a few seconds while your Droplet is provisioning.
 When your Droplet is ready, use SSH to connect:

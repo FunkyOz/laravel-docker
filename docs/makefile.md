@@ -36,11 +36,11 @@ or use [Cygwin](http://cygwin.com) to use the `make` command. Check out this
 DOCKER_COMP = docker compose
 
 # Docker containers
-PHP_CONT = $(DOCKER_COMP) exec php
+SERVER_CONT = $(DOCKER_COMP) exec server
 
 # Executables
-PHP      = $(PHP_CONT) php
-COMPOSER = $(PHP_CONT) composer
+PHP      = $(SERVER_CONT) php
+COMPOSER = $(SERVER_CONT) composer
 ARTISAN  = $(PHP) artisan
 
 # Misc
@@ -66,8 +66,8 @@ down: ## Stop the docker hub
 logs: ## Show live logs
 	@$(DOCKER_COMP) logs --tail=0 --follow
 
-sh: ## Connect to the PHP FPM container
-	@$(PHP_CONT) sh
+sh: ## Connect to the Server container
+	@$(SERVER_CONT) sh
 
 ## —— Composer 🧙 ——————————————————————————————————————————————————————————————
 composer: ## Run composer, pass the parameter "c=" to run a given command, example: make composer c='req guzzlehttp/guzzle'

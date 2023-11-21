@@ -29,7 +29,7 @@ For instance, to use self-signed certificates created with [mkcert](https://gith
    `mkcert -cert-file docker/caddy/certs/tls.pem -key-file docker/caddy/certs/tls.key "server-name.localhost"`
 4. Add these lines to the `./docker-compose.override.yml` file about `CADDY_EXTRA_CONFIG` environment and volume for the `caddy` service :
     ```diff
-    caddy:
+    server:
     +  environment:
     +    CADDY_EXTRA_CONFIG: "tls /etc/caddy/certs/tls.pem /etc/caddy/certs/tls.key"
       volumes:

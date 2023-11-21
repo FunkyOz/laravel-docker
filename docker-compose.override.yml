@@ -2,30 +2,23 @@ version: "3.4"
 
 # Development environment override
 services:
-  php:
+  server:
+    command: [ "caddy", "run", "--config", "/etc/caddy/Caddyfile", "--adapter", "caddyfile", "--watch" ]
     build:
       context: .
-      target: php_dev
+      target: server_dev
     volumes:
       - ./:/srv/app
+      - ./public:/srv/app/public
       - ./docker/php/conf.d/app.dev.ini:/usr/local/etc/php/conf.d/app.dev.ini:ro
-      # If you develop on Mac or Windows you can remove the vendor/ directory
+      - ./docker/caddy/Caddyfile:/etc/caddy/Caddyfile:ro
+      # If you develop on Mac or Windows, you can remove the vendor/ directory
       # from the bind-mount for better performance by enabling the next line:
       #- /srv/app/vendor
     environment:
       # See https://xdebug.org/docs/all_settings#mode
       XDEBUG_MODE: "${XDEBUG_MODE:-off}"
+      MERCURE_EXTRA_DIRECTIVES: demo
     extra_hosts:
       # Ensure that host.docker.internal is correctly defined on Linux
       - host.docker.internal:host-gateway
-
-  caddy:
-    command: [ "caddy", "run", "--config", "/etc/caddy/Caddyfile", "--adapter", "caddyfile", "--watch" ]
-    build:
-      context: .
-      target: caddy_base
-    volumes:
-      - ./public:/srv/app/public:ro
-      - ./docker/caddy/Caddyfile:/etc/caddy/Caddyfile:ro
-    environment:
-      MERCURE_EXTRA_DIRECTIVES: demo
