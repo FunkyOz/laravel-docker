@@ -117,6 +117,3 @@ RUN rm -Rf docker/; \
     set -eux; \
 	composer dump-autoload --classmap-authoritative --no-dev; \
 	chmod +x artisan; sync;
-
-RUN chown -R www-data:www-data ./storage/framework/views
-RUN chown -R www-data:www-data ./storage/logs
