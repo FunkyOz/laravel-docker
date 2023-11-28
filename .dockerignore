@@ -1,3 +1,5 @@
+.idea
+.vscode
 **/*.log
 **/*.md
 **/*.php~
@@ -23,7 +25,10 @@ public/bundles/
 tests/
 var/
 vendor/
+storage/framework/sessions/*
+storage/framework/views/*
 .editorconfig
+.env
 .env.*.local
 .env.local
 .env.local.php
