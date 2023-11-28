@@ -88,9 +88,8 @@ FROM php_base AS server_dev
 
 ENV APP_ENV=dev XDEBUG_MODE=off
 
-RUN mv "$PHP_INI_DIR/php.ini-development" "$PHP_INI_DIR/php.ini"
-
-RUN set -eux; \
+RUN mv "$PHP_INI_DIR/php.ini-development" "$PHP_INI_DIR/php.ini"; \
+    set -eux; \
 	install-php-extensions \
     	xdebug \
     ;
@@ -113,9 +112,9 @@ RUN set -eux; \
 
 # copy sources
 COPY --link . ./
-RUN rm -Rf docker/
 
-RUN set -eux; \
+RUN rm -Rf docker/; \
+    set -eux; \
 	composer dump-autoload --classmap-authoritative --no-dev; \
 	chmod +x artisan; sync;
 
