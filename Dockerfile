@@ -36,9 +36,10 @@ RUN apk add --no-cache \
     	supervisor \
 	;
 
-RUN mkdir -p /var/log/php
-RUN mkdir -p /var/log/supervisord
-RUN mkdir -p /var/run/supervisord
+RUN mkdir -p /var/log/php; \
+    mkdir -p /var/log/supervisord;  \
+    mkdir -p /var/run/supervisord \
+    ;
 
 COPY --link docker/supervisord/supervisord.conf /etc/supervisord.conf
 
