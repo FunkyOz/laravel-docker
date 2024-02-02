@@ -9,13 +9,13 @@ It can be enabled by setting the `XDEBUG_MODE` environment variable to `debug`.
 On Linux and Mac:
 
 ```
-XDEBUG_MODE=debug docker compose up -d
+XDEBUG_MODE=debug docker compose up --pull always -d --wait
 ```
 
 On Windows:
 
 ```
-set XDEBUG_MODE=debug&& docker compose up -d&set XDEBUG_MODE=
+set XDEBUG_MODE=debug&& docker compose up --pull always -d --wait&set XDEBUG_MODE=
 ```
 
 ## Debugging with Xdebug and PHPStorm
@@ -29,7 +29,7 @@ First, [create a PHP debug remote server configuration](https://www.jetbrains.co
     * Port: `443`
     * Debugger: `Xdebug`
     * Check `Use path mappings`
-    * Absolute path on the server: `/srv/app`
+    * Absolute path on the server: `/app`
 
 You can now use the debugger!
 
@@ -48,7 +48,7 @@ You can now use the debugger!
    Example:
 
     ```console
-    XDEBUG_SESSION=1 PHP_IDE_CONFIG="serverName=laravel" php bin/console ...
+    XDEBUG_SESSION=1 PHP_IDE_CONFIG="serverName=laravel" php artisan ...
     ```
 
 ## Troubleshooting

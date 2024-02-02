@@ -19,6 +19,6 @@ Build the Docker images:
 
 Start the project!
 
-    docker compose up -d
+    docker compose up --pull always -d --wait
 
 Browse `https://localhost`, your Docker configuration is ready!

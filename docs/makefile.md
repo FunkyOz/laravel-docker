@@ -36,7 +36,7 @@ or use [Cygwin](http://cygwin.com) to use the `make` command. Check out this
 DOCKER_COMP = docker compose
 
 # Docker containers
-SERVER_CONT = $(DOCKER_COMP) exec server
+SERVER_CONT = $(DOCKER_COMP) exec php
 
 # Executables
 PHP      = $(SERVER_CONT) php
@@ -56,7 +56,7 @@ build: ## Builds the Docker images
 	@$(DOCKER_COMP) build --pull --no-cache
 
 up: ## Start the docker hub in detached mode (no logs)
-	@$(DOCKER_COMP) up --detach
+	@$(DOCKER_COMP) up --pull always -d --wait
 
 start: build up ## Build and start the containers
 
