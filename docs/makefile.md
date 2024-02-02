@@ -14,7 +14,7 @@ For example, in the [getting started section](/README.md#getting-started), the
 Of course, this template is basic for now. But, as your application is growing,
 you will probably want to add some targets like running your tests.
 
-If you want to run make from within the `php` container, in the [Dockerfile](/Dockerfile),
+If you want to run make from within the `php` container, in the [Dockerfile](../Dockerfile),
 add:
 
 ```diff
